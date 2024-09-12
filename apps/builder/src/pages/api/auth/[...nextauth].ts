@@ -12,7 +12,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { customAdapter } from '../../../features/auth/api/customAdapter'
 import { User } from '@typebot.io/prisma'
 import { getAtPath, isDefined } from '@typebot.io/lib'
-import { mockedUser } from '@typebot.io/lib/mockedUser'
 import { getNewUserInvitations } from '@/features/auth/helpers/getNewUserInvitations'
 import { sendVerificationRequest } from '@/features/auth/helpers/sendVerificationRequest'
 import { Ratelimit } from '@upstash/ratelimit'
@@ -22,6 +21,8 @@ import * as Sentry from '@sentry/nextjs'
 import { getIp } from '@typebot.io/lib/getIp'
 import { trackEvents } from '@typebot.io/telemetry/trackEvents'
 import Redis from 'ioredis'
+import { getUser } from '@/features/auth/helpers/getUser'
+import { newUser } from '@/features/auth/helpers/newUser'
 
 const providers: Provider[] = []
 
@@ -234,11 +235,16 @@ export const getAuthOptions = ({
 })
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const isMockingSession =
-    req.method === 'GET' &&
-    req.url === '/api/auth/session' &&
-    env.NEXT_PUBLIC_E2E_TEST
-  if (isMockingSession) return res.send({ user: mockedUser })
+  if (req.method === 'POST' && req.url === '/api/auth/newUser') {
+    const user = await newUser(prisma, req.body)
+    return res.send({ user })
+  }
+
+  if (req.method === 'GET' && req.url === '/api/auth/session') {
+    const user = await getUser(req, res)
+    return res.send({ user })
+  }
+
   const requestIsFromCompanyFirewall = req.method === 'HEAD'
   if (requestIsFromCompanyFirewall) return res.status(200).end()
 

@@ -1,11 +1,8 @@
 import prisma from '@typebot.io/lib/prisma'
-import { getAuthOptions } from '@/pages/api/auth/[...nextauth]'
 import * as Sentry from '@sentry/nextjs'
 import { User } from '@typebot.io/prisma'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from 'next-auth'
-import { env } from '@typebot.io/env'
-import { mockedUser } from '@typebot.io/lib/mockedUser'
+import { getUser } from './getUser'
 
 export const getAuthenticatedUser = async (
   req: NextApiRequest,
@@ -13,11 +10,9 @@ export const getAuthenticatedUser = async (
 ): Promise<User | undefined> => {
   const bearerToken = extractBearerToken(req)
   if (bearerToken) return authenticateByToken(bearerToken)
-  const user = env.NEXT_PUBLIC_E2E_TEST
-    ? mockedUser
-    : ((await getServerSession(req, res, getAuthOptions({})))?.user as
-        | User
-        | undefined)
+
+  const user = await getUser(req, res)
+
   if (!user || !('id' in user)) return
   Sentry.setUser({ id: user.id })
   return user

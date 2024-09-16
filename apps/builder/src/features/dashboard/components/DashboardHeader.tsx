@@ -1,6 +1,5 @@
 import React from 'react'
 import { HStack, Flex, useDisclosure, Text } from '@chakra-ui/react'
-import { HardDriveIcon } from '@/components/icons'
 import { useUser } from '@/features/account/hooks/useUser'
 import Link from 'next/link'
 import { EmojiOrImageIcon } from '@/components/EmojiOrImageIcon'
@@ -35,7 +34,6 @@ export const DashboardHeader = () => {
           <EmojiOrImageIcon
             boxSize="70px"
             icon={`${process.env.NEXTAUTH_URL}/lead.svg`}
-            defaultIcon={HardDriveIcon}
           />
         </Link>
         <HStack>
@@ -52,7 +50,7 @@ export const DashboardHeader = () => {
               />
             </ParentModalProvider>
           )}
-          <Text fontSize="large" color="white" fontWeight="bold">
+          <Text fontSize="large" color="black" fontWeight="bold">
             {workspace?.name ?? t('dashboard.title')}
           </Text>
         </HStack>

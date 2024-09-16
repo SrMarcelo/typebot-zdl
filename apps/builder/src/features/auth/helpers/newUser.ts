@@ -44,6 +44,7 @@ export const newUser = async (prisma: PrismaClient, data: any) => {
       apiTokens: {
         create: { name: 'Default', token },
       },
+      preferredAppAppearance: 'light',
       workspaces: {
         create: {
           role: WorkspaceRole.ADMIN,

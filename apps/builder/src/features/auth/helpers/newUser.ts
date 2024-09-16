@@ -49,7 +49,7 @@ export const newUser = async (prisma: PrismaClient, data: any) => {
           role: WorkspaceRole.ADMIN,
           workspace: {
             create: {
-              name: data.empresa ? `${data.empresa} - Zé do Lead` : 'Workspace',
+              name: data.company ? `${data.company} - Zé do Lead` : 'Workspace',
               plan: Plan.UNLIMITED,
             },
           },

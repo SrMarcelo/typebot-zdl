@@ -1,31 +1,26 @@
 import React from 'react'
-import { HStack, Flex, Button, useDisclosure } from '@chakra-ui/react'
-import { HardDriveIcon, SettingsIcon } from '@/components/icons'
+import { HStack, Flex, useDisclosure, Text } from '@chakra-ui/react'
+import { HardDriveIcon } from '@/components/icons'
 import { useUser } from '@/features/account/hooks/useUser'
-import { isNotDefined } from '@typebot.io/lib'
 import Link from 'next/link'
 import { EmojiOrImageIcon } from '@/components/EmojiOrImageIcon'
 import { useTranslate } from '@tolgee/react'
 import { useWorkspace } from '@/features/workspace/WorkspaceProvider'
-import { WorkspaceDropdown } from '@/features/workspace/components/WorkspaceDropdown'
 import { WorkspaceSettingsModal } from '@/features/workspace/components/WorkspaceSettingsModal'
 import { ParentModalProvider } from '@/features/graph/providers/ParentModalProvider'
 import { useRouter } from 'next/router'
 
 export const DashboardHeader = () => {
   const { t } = useTranslate()
-  const { user, logOut } = useUser()
-  const { workspace, switchWorkspace, createWorkspace } = useWorkspace()
+  const { user } = useUser()
+  const { workspace } = useWorkspace()
   const { asPath } = useRouter()
 
   const isRedirectFromCredentialsCreation = asPath.includes('credentials')
 
-  const { isOpen, onOpen, onClose } = useDisclosure({
+  const { isOpen, onClose } = useDisclosure({
     defaultIsOpen: isRedirectFromCredentialsCreation,
   })
-
-  const handleCreateNewWorkspace = () =>
-    createWorkspace(user?.name ?? undefined)
 
   return (
     <Flex w="full" borderBottomWidth="1px" justify="center">
@@ -38,8 +33,8 @@ export const DashboardHeader = () => {
       >
         <Link href="/typebots" data-testid="typebot-logo">
           <EmojiOrImageIcon
-            boxSize="30px"
-            icon={workspace?.icon}
+            boxSize="70px"
+            icon={`${process.env.NEXTAUTH_URL}/lead.svg`}
             defaultIcon={HardDriveIcon}
           />
         </Link>
@@ -57,21 +52,9 @@ export const DashboardHeader = () => {
               />
             </ParentModalProvider>
           )}
-          {!workspace?.isPastDue && (
-            <Button
-              leftIcon={<SettingsIcon />}
-              onClick={onOpen}
-              isLoading={isNotDefined(workspace)}
-            >
-              {t('dashboard.header.settingsButton.label')}
-            </Button>
-          )}
-          <WorkspaceDropdown
-            currentWorkspace={workspace}
-            onLogoutClick={logOut}
-            onCreateNewWorkspaceClick={handleCreateNewWorkspace}
-            onWorkspaceSelected={switchWorkspace}
-          />
+          <Text fontSize="large" color="white" fontWeight="bold">
+            {workspace?.name ?? t('dashboard.title')}
+          </Text>
         </HStack>
       </Flex>
     </Flex>

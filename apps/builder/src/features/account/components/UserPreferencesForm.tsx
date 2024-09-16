@@ -14,7 +14,7 @@ import { AppearanceRadioGroup } from './AppearanceRadioGroup'
 import { useUser } from '../hooks/useUser'
 import { ChevronDownIcon } from '@/components/icons'
 import { MoreInfoTooltip } from '@/components/MoreInfoTooltip'
-import { useTranslate, useTolgee } from '@tolgee/react'
+import { useTranslate } from '@tolgee/react'
 import { useRouter } from 'next/router'
 import { GraphNavigationRadioGroup } from './GraphNavigationRadioGroup'
 
@@ -30,7 +30,6 @@ const localeHumanReadable = {
 } as const
 
 export const UserPreferencesForm = () => {
-  const { getLanguage } = useTolgee()
   const router = useRouter()
   const { t } = useTranslate()
   const { user, updateUser } = useUser()
@@ -60,8 +59,7 @@ export const UserPreferencesForm = () => {
     updateUser({ graphNavigation: value as GraphNavigation })
   }
 
-  const currentLanguage = getLanguage()
-
+  const currentLanguage = 'pt-BR'
   return (
     <Stack spacing={12}>
       <HStack spacing={4}>
@@ -91,11 +89,9 @@ export const UserPreferencesForm = () => {
             ))}
           </MenuList>
         </Menu>
-        {currentLanguage !== 'en' && (
-          <MoreInfoTooltip>
-            {t('account.preferences.language.tooltip')}
-          </MoreInfoTooltip>
-        )}
+        <MoreInfoTooltip>
+          {t('account.preferences.language.tooltip')}
+        </MoreInfoTooltip>
       </HStack>
       <Stack spacing={6}>
         <Heading size="md">

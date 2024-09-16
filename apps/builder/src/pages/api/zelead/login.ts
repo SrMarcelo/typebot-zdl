@@ -6,27 +6,21 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const authZLID: string | undefined = `${req.query.authZLID}`
-  const authJWT: string | undefined = `${req.query.authJWT}`
 
   const cookieConfig = {
     maxAge: 180 * 24 * 60 * 60,
     httpOnly: true,
-    secure: true,
-    domain: `${
-      process.env.NEXTAUTH_URL
-        ? process.env.NEXTAUTH_URL.replace('https://', '').replace(
-            'http://',
-            ''
-          )
-        : ''
-    }`,
+    secure: process.env.NODE_ENV === 'production',
+    domain:
+      process.env.NODE_ENV === 'production'
+        ? 'fluxos.zelead.com.br'
+        : 'localhost',
     path: '/',
   }
 
   const cookie1 = serialize('authId', authZLID, cookieConfig)
-  const cookie2 = serialize('authJWT', authJWT, cookieConfig)
 
   res
-    .setHeader('Set-Cookie', [cookie1, cookie2])
+    .setHeader('Set-Cookie', [cookie1])
     .redirect(process.env.NEXTAUTH_URL || '/')
 }

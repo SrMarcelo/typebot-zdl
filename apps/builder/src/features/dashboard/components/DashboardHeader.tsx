@@ -8,6 +8,7 @@ import { useWorkspace } from '@/features/workspace/WorkspaceProvider'
 import { WorkspaceSettingsModal } from '@/features/workspace/components/WorkspaceSettingsModal'
 import { ParentModalProvider } from '@/features/graph/providers/ParentModalProvider'
 import { useRouter } from 'next/router'
+import logoZDL from '../../../../public/images/LOGO-ZDL.png'
 
 export const DashboardHeader = () => {
   const { t } = useTranslate()
@@ -31,10 +32,7 @@ export const DashboardHeader = () => {
         flex="1"
       >
         <Link href="/typebots" data-testid="typebot-logo">
-          <EmojiOrImageIcon
-            boxSize="70px"
-            icon={`${process.env.NEXTAUTH_URL}/lead.svg`}
-          />
+          <EmojiOrImageIcon boxSize="70px" image={logoZDL} />
         </Link>
         <HStack>
           {user && workspace && !workspace.isPastDue && (
